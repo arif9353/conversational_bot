@@ -1,5 +1,5 @@
 import pandas as pd
-from agents.ingestion_agent import ingestion
+from agents.ingestion import ingestion
 
 async def process_file(file_path: str):
     # Load file
