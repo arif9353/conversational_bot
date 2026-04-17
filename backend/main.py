@@ -2,6 +2,8 @@ from fastapi import FastAPI, UploadFile, File, HTTPException, status
 from fastapi.responses import JSONResponse
 import shutil
 import os
+from utils.process_ingestion_file import process_file
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -27,10 +29,16 @@ async def ingest_file(file: UploadFile = File(...)):
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
+        # ✅ Process file
+        result = await process_file(file_path)
+
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                "message": "File processed successfully"
+                "message": "File processed successfully",
+                "columns": result["columns"],
+                "preview": result["preview"],
+                "context_saved": True
             }
         )
 
@@ -43,7 +51,7 @@ async def ingest_file(file: UploadFile = File(...)):
             }
         )
 
-class ChatReq:
+class ChatReq(BaseModel):
     query: str
     session_id: str
 
@@ -69,7 +77,3 @@ async def chat(req: ChatReq):
             }
         )
     
-
-
-
-
