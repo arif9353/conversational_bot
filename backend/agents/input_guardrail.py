@@ -125,7 +125,7 @@ if __name__=="__main__":
     async def _main():
         with open("dataset_context.txt", "r", encoding="utf-8") as f:
             data_context = f.read()
-        resp = await input_guardrail("What is the temperature?", data_context)
+        resp = await input_guardrail("Can you tell me about the maximum quantity of order in the list?", data_context)
         print(resp)
     
     asyncio.run(_main())
