@@ -3,7 +3,8 @@ def print_state(state: dict):
     
     for key, value in state.items():
         print(f"{key}:")
-
+        if key=="visualization_base64":
+            continue
         if key == "pandas_dataframe":
             try:
                 print(f"  DataFrame shape: {value.shape}")

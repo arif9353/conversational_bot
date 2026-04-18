@@ -1,5 +1,6 @@
 from utils.llm import call_llm
-import json, asyncio
+import json
+# import asyncio
 
 async def input_guardrail(user_query: str, data_context: str, conversation_history: str) -> str:
     try:
@@ -141,11 +142,11 @@ async def input_guardrail(user_query: str, data_context: str, conversation_histo
         raise e
     
 
-if __name__=="__main__":
-    async def _main():
-        with open("dataset_context.txt", "r", encoding="utf-8") as f:
-            data_context = f.read()
-        resp = await input_guardrail("Can you tell me about the maximum quantity of order in the list?", data_context)
-        print(resp)
+# if __name__=="__main__":
+#     async def _main():
+#         with open("dataset_context.txt", "r", encoding="utf-8") as f:
+#             data_context = f.read()
+#         resp = await input_guardrail("Can you tell me about the maximum quantity of order in the list?", data_context)
+#         print(resp)
     
-    asyncio.run(_main())
+#     asyncio.run(_main())

@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 from typing_extensions import Any
-import asyncio
-from agents.pandas_query_generator import pandas_query_generator
+# import asyncio
+# from agents.pandas_query_generator import pandas_query_generator
 
 # 🚫 Forbidden patterns
 FORBIDDEN_KEYWORDS = [
@@ -39,7 +39,7 @@ def pandas_query_executor(df: pd.DataFrame, pandas_expr: str):
         return normalized_result
 
     except Exception as e:
-        print("Exception in pandas_query_executor:", e)
+        print("Exception occured in pandas_query_executor() in pandas_query_executor.py as: ", e)
         raise e
 
 
@@ -89,20 +89,20 @@ def normalize_result(result: Any) -> dict:
         }
 
     except Exception as e:
-        print("Exception in normalize_result:", e)
+        print("Exception occured in normalize_result() in pandas_query_executor.py as: ", e)
         raise e
     
 
-if __name__=="__main__":
-    async def _main():
-        df = pd.read_excel("uploads/Route_Input_file (1).xlsx")
-        user_query = "Find the maximum value in the 'Total Qty' column."
-        with open("dataset_context.txt", "r", encoding="utf-8") as f:
-            dataset_context = f.read()
-        # pandas_expr = await pandas_query_generator(user_query, dataset_context)
-        pandas_expr = """df[df["From Location"] == "SBPPC - Guwahati"].groupby("Date of truck release")["Total Qty"].sum()"""
-        # print(pandas_expr)
-        resp = pandas_query_executor(df, pandas_expr)
-        print(resp)
+# if __name__=="__main__":
+#     async def _main():
+#         df = pd.read_excel("uploads/Route_Input_file (1).xlsx")
+#         user_query = "Find the maximum value in the 'Total Qty' column."
+#         with open("dataset_context.txt", "r", encoding="utf-8") as f:
+#             dataset_context = f.read()
+#         # pandas_expr = await pandas_query_generator(user_query, dataset_context)
+#         pandas_expr = """df[df["From Location"] == "SBPPC - Guwahati"].groupby("Date of truck release")["Total Qty"].sum()"""
+#         # print(pandas_expr)
+#         resp = pandas_query_executor(df, pandas_expr)
+#         print(resp)
 
-    asyncio.run(_main())
+#     asyncio.run(_main())

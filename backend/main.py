@@ -50,6 +50,7 @@ async def ingest_file(file: UploadFile = File(...)):
                 "message": "File processed successfully",
                 "columns": result["columns"],
                 "preview": result["preview"],
+                "context": result["context"],
                 "context_saved": True
             }
         )
@@ -63,10 +64,6 @@ async def ingest_file(file: UploadFile = File(...)):
             }
         )
 
-class ChatReq(BaseModel):
-    query: str
-    session_id: str
-    file_name: str
 
 async def summarize_text(text: str) -> str:
     prompt = f"""
@@ -194,14 +191,21 @@ def get_session_history(session_id: str) -> SmartChatHistory:
         store[session_id] = SmartChatHistory()
     return store[session_id]
 
+
+class ChatReq(BaseModel):
+    query: str
+    session_id: str
+    file_name: str
+    dataset_context: str
+
+
 @app.post("/chat")
 async def chat(req: ChatReq):
     try:
         user_query = req.query
         session_id = req.session_id
         df = pd.read_excel(f"uploads/{req.file_name}")
-        with open("dataset_context.txt", "r", encoding="utf-8") as f:
-            dataset_context = f.read()
+        dataset_context = req.dataset_context
         chain = await build_langgraph_workflow()
         history = get_session_history(session_id)
         full_context = history.dump_for_llm()

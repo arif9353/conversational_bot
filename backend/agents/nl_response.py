@@ -1,8 +1,8 @@
 from utils.llm import call_llm
-from agents.pandas_query_generator import pandas_query_generator
-from agents.pandas_query_executor import pandas_query_executor
-import pandas as pd
-import asyncio
+# from agents.pandas_query_generator import pandas_query_generator
+# from agents.pandas_query_executor import pandas_query_executor
+# import pandas as pd
+# import asyncio
 
 async def nl_response(user_query: str, enhaced_user_query:str, pandas_result: dict) -> str:
     try:
@@ -86,18 +86,18 @@ async def nl_response(user_query: str, enhaced_user_query:str, pandas_result: di
         raise e
     
 
-if __name__=="__main__":
-    async def _main():
-        df = pd.read_excel("uploads/Route_Input_file (1).xlsx")
-        enhaced_user_query = "Find the maximum value in the 'Total Qty' column."
-        user_query = "Can you tell me about the maximum quantity of order in the list?"
-        with open("dataset_context.txt", "r", encoding="utf-8") as f:
-            dataset_context = f.read()
-        pandas_expr = await pandas_query_generator(enhaced_user_query, dataset_context)
-        print(pandas_expr)
-        pandas_result = pandas_query_executor(df, pandas_expr)
-        print(pandas_result)
-        nl_resp = await nl_response(user_query, enhaced_user_query, pandas_result)
-        print(nl_resp)
+# if __name__=="__main__":
+#     async def _main():
+#         df = pd.read_excel("uploads/Route_Input_file (1).xlsx")
+#         enhaced_user_query = "Find the maximum value in the 'Total Qty' column."
+#         user_query = "Can you tell me about the maximum quantity of order in the list?"
+#         with open("dataset_context.txt", "r", encoding="utf-8") as f:
+#             dataset_context = f.read()
+#         pandas_expr = await pandas_query_generator(enhaced_user_query, dataset_context)
+#         print(pandas_expr)
+#         pandas_result = pandas_query_executor(df, pandas_expr)
+#         print(pandas_result)
+#         nl_resp = await nl_response(user_query, enhaced_user_query, pandas_result)
+#         print(nl_resp)
 
-    asyncio.run(_main())
+#     asyncio.run(_main())

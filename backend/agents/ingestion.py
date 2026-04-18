@@ -40,5 +40,5 @@ async def ingestion(columns, sample_rows, dtypes) -> str:
         return await call_llm(prompt)
     
     except Exception as e:
-        print("Exception occured in ingestion_agent.py in ingestion() as: ",e)
+        print("Exception occured in ingestion() in ingestion.py as: ",e)
         raise e

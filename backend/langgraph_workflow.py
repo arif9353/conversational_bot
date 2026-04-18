@@ -5,11 +5,12 @@ from agents.pandas_query_generator import pandas_query_generator
 from agents.pandas_query_executor import pandas_query_executor
 from agents.nl_response import nl_response
 import pandas as pd
-import asyncio
-from utils.print_langgraph_state import print_state
 from agents.visualization import visualization
 from utils.generate_visualization_chart import generate_chart
 from utils.visualization_data_format import format_data_for_visualization
+
+# import asyncio
+# from utils.print_langgraph_state import print_state
 
 class State(TypedDict):
     # inputs:
@@ -166,17 +167,17 @@ async def build_langgraph_workflow() -> Any:
         print("Exception Occured in build_langgraph_workflow() in langgraph_workflow.py as: ",e)
         raise e
 
-if __name__=="__main__":
-    async def _main():
-        df = pd.read_excel("uploads/Route_Input_file (1).xlsx")
-        user_query = "What is the total count of quantity?"
-        with open("dataset_context.txt", "r", encoding="utf-8") as f:
-            dataset_context = f.read()
-        chain = await build_langgraph_workflow()
-        state = await chain.ainvoke({
-            "user_query": user_query,
-            "data_context": dataset_context,
-            "pandas_dataframe": df
-        })
-        print_state(state)
-    asyncio.run(_main())
+# if __name__=="__main__":
+#     async def _main():
+#         df = pd.read_excel("uploads/Route_Input_file (1).xlsx")
+#         user_query = "What is the total count of quantity?"
+#         with open("dataset_context.txt", "r", encoding="utf-8") as f:
+#             dataset_context = f.read()
+#         chain = await build_langgraph_workflow()
+#         state = await chain.ainvoke({
+#             "user_query": user_query,
+#             "data_context": dataset_context,
+#             "pandas_dataframe": df
+#         })
+#         print_state(state)
+#     asyncio.run(_main())

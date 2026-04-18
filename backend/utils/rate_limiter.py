@@ -18,4 +18,4 @@ class FixedIntervalRateLimiter:
             self.last_call = time.time()
 
 
-rate_limiter = FixedIntervalRateLimiter(interval=7)
+rate_limiter = FixedIntervalRateLimiter(interval=12)

@@ -1,7 +1,8 @@
 from utils.llm import call_llm
-import json, asyncio
-import pandas as pd
-from agents.pandas_query_executor import pandas_query_executor
+import json
+# import asyncio
+# import pandas as pd
+# from agents.pandas_query_executor import pandas_query_executor
 
 async def visualization(user_query: str, pandas_query: str, query_result: dict, data_context: str) -> str:
     try:
@@ -62,18 +63,18 @@ async def visualization(user_query: str, pandas_query: str, query_result: dict, 
         raise e
     
 
-if __name__=="__main__":
-    async def _main():
-        df = pd.read_excel("uploads/Route_Input_file (1).xlsx")
-        user_query = "Provide me the total quantity of order for each day going from 'SBPPC - Guwahati'"
-        with open("dataset_context.txt", "r", encoding="utf-8") as f:
-            dataset_context = f.read()
-        # pandas_expr = await pandas_query_generator(user_query, dataset_context)
-        pandas_expr = """df[df["From Location"] == "SBPPC - Guwahati"].groupby("Date of truck release")["Total Qty"].sum()"""
-        # print(pandas_expr)
-        query_result = pandas_query_executor(df, pandas_expr)
-        print(query_result)
-        resp = await visualization(user_query, pandas_expr, query_result, dataset_context)
-        print(resp)
+# if __name__=="__main__":
+#     async def _main():
+#         df = pd.read_excel("uploads/Route_Input_file (1).xlsx")
+#         user_query = "Provide me the total quantity of order for each day going from 'SBPPC - Guwahati'"
+#         with open("dataset_context.txt", "r", encoding="utf-8") as f:
+#             dataset_context = f.read()
+#         # pandas_expr = await pandas_query_generator(user_query, dataset_context)
+#         pandas_expr = """df[df["From Location"] == "SBPPC - Guwahati"].groupby("Date of truck release")["Total Qty"].sum()"""
+#         # print(pandas_expr)
+#         query_result = pandas_query_executor(df, pandas_expr)
+#         print(query_result)
+#         resp = await visualization(user_query, pandas_expr, query_result, dataset_context)
+#         print(resp)
 
-    asyncio.run(_main())
+#     asyncio.run(_main())
