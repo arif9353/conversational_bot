@@ -4,6 +4,8 @@ import shutil
 import os
 from utils.process_ingestion_file import process_file
 from pydantic import BaseModel
+from langgraph_workflow import build_langgraph_workflow
+import pandas as pd
 
 app = FastAPI()
 
@@ -54,17 +56,27 @@ async def ingest_file(file: UploadFile = File(...)):
 class ChatReq(BaseModel):
     query: str
     session_id: str
+    file_name: str
 
 @app.post("/chat")
 async def chat(req: ChatReq):
     try:
         user_query = req.query
         session_id = req.session_id
-
+        df = pd.read_excel(f"uploads/{req.file_name}")
+        with open("dataset_context.txt", "r", encoding="utf-8") as f:
+            dataset_context = f.read()
+        chain = await build_langgraph_workflow()
+        state = await chain.ainvoke({
+            "user_query": user_query,
+            "data_context": dataset_context,
+            "pandas_dataframe": df
+        })
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={
-                "message": "File processed successfully"
+                "text": state["answer"],
+                "base64": state["visualization_base64"]
             }
         )
 
