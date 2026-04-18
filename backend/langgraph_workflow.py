@@ -16,6 +16,7 @@ class State(TypedDict):
     pandas_dataframe : pd.DataFrame
     user_query: str
     data_context: str
+    conversation_history: str
 
     # guardrail:
     enhanced_user_query: str
@@ -38,10 +39,10 @@ class State(TypedDict):
 
 async def input_guardrail_agent(state: State) -> State:
     try:
-        resp = await input_guardrail(state["user_query"], state["data_context"])
+        resp = await input_guardrail(state["user_query"], state["data_context"], state["conversation_history"])
         if resp["isContinue"]:
             state["continue_conversation"] = True
-            state["enhanced_user_query"] = resp["query"]
+            state["enhanced_user_query"] = resp["contextualized_user_query"]
         else:
             state["continue_conversation"] = False
             state["answer"] = resp["query"]
