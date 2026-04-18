@@ -66,7 +66,9 @@ def normalize_result(result: Any) -> dict:
         elif isinstance(result, pd.Series):
             return {
                 "type": "series",
-                "data": result.tolist()
+                "index": result.index.tolist(),
+                "data": result.tolist(),
+                "name": result.name
             }
 
         elif isinstance(result, np.generic):
@@ -97,8 +99,9 @@ if __name__=="__main__":
         user_query = "Find the maximum value in the 'Total Qty' column."
         with open("dataset_context.txt", "r", encoding="utf-8") as f:
             dataset_context = f.read()
-        pandas_expr = await pandas_query_generator(user_query, dataset_context)
-        print(pandas_expr)
+        # pandas_expr = await pandas_query_generator(user_query, dataset_context)
+        pandas_expr = """df[df["From Location"] == "SBPPC - Guwahati"].groupby("Date of truck release")["Total Qty"].sum()"""
+        # print(pandas_expr)
         resp = pandas_query_executor(df, pandas_expr)
         print(resp)
 

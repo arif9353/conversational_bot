@@ -105,7 +105,7 @@ async def pandas_query_generator(enhanced_user_query: str, data_context: str) ->
 
 if __name__=="__main__":
     async def _main():
-        user_query = "Find the maximum value in the 'Total Qty' column."
+        user_query = "Provide me the total quantity of order for each day going from 'SBPPC - Guwahati'"
         with open("dataset_context.txt", "r", encoding="utf-8") as f:
             dataset_context = f.read()
         resp = await pandas_query_generator(user_query, dataset_context)

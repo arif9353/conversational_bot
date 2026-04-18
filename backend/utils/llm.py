@@ -8,7 +8,7 @@ client = genai.Client()
 
 
 async def call_llm(prompt: str) -> str :
-    response = await client.aio.models.generate_content(
+    response = client.models.generate_content(
         model="gemini-2.5-flash-lite", contents=prompt
     )
     return response.text
