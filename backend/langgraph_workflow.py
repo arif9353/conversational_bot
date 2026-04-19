@@ -173,6 +173,8 @@ async def build_langgraph_workflow() -> Any:
         graph.add_edge("nl_response_agent", END)
 
         chain = graph.compile()
+        # with open ('workflow_architecture.txt', 'w', encoding="utf-8") as f:
+        #     f.write(chain.get_graph().draw_ascii())
         return chain
     
     except Exception as e:
