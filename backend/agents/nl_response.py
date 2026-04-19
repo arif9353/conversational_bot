@@ -9,7 +9,7 @@ async def nl_response(user_query: str, enhaced_user_query:str, pandas_result: di
         prompt = f"""
             You are a data assistant.
 
-            Your job is to convert structured query results into a clear and concise natural language response.
+            Your job is to convert structured query results into a clear, slightly descriptive, and user-friendly natural language response.
 
             ---
 
@@ -18,7 +18,7 @@ async def nl_response(user_query: str, enhaced_user_query:str, pandas_result: di
             User Query:
             {user_query}
 
-            Enhanced User Quer:
+            Enhanced User Query:
             {enhaced_user_query}
 
             Query Result:
@@ -28,7 +28,9 @@ async def nl_response(user_query: str, enhaced_user_query:str, pandas_result: di
 
             ### YOUR TASK:
 
-            Generate a user-friendly answer based ONLY on the query result.
+            Generate a helpful and natural response based ONLY on the query result.
+
+            The response should not be just a raw value — it should provide context and readability.
 
             ---
 
@@ -36,48 +38,60 @@ async def nl_response(user_query: str, enhaced_user_query:str, pandas_result: di
 
             - DO NOT hallucinate or assume anything not present in the result
             - DO NOT add external knowledge
-            - Keep the answer concise and clear
-            - If the result is empty, say no data found
-            - Use simple natural language
             - DO NOT explain how the result was computed
+            - Keep the response concise BUT informative
+            - Add clarity where useful (e.g., what the value represents)
 
             ---
 
             ### RESPONSE GUIDELINES:
 
             #### Case 1: Scalar Result
-            - Directly answer with the value
+            - Mention what the value represents
+            - Make it sound complete
 
             Example:
-            "Total sales is 450"
+            "Total sales amount to 450 units."
 
             ---
 
             #### Case 2: Series Result
-            - Summarize key values
-            - Mention top or relevant entries
+            - Present key values clearly
+            - Mention top or most relevant entries
+            - If many values → summarize (top 3–5)
 
             Example:
-            "Sales by region: North = 250, South = 200"
+            "Sales vary across regions, with North leading at 250 units, followed by South at 200 units."
 
             ---
 
             #### Case 3: DataFrame Result
-            - Summarize what is shown
-            - Highlight important rows (top 3 if large)
+            - Describe what the table represents
+            - Highlight key insights (top rows, max/min, patterns)
+            - Avoid dumping raw data
 
             Example:
-            "Here are the top 5 products by sales. Product A leads with 500 units, followed by Product B..."
+            "The top products by sales show that Product A leads with 500 units, followed by Product B and Product C."
 
             ---
 
             #### Case 4: Empty Result
             - Say:
-            "No data found for this query"
+            "No data found for this query."
+
+            ---
+
+            ### STYLE GUIDELINES:
+
+            - Use natural, conversational tone
+            - Avoid robotic phrasing
+            - Prefer complete sentences over fragments
+            - Add slight interpretation ONLY if directly supported by data
 
             ---
 
             ### OUTPUT:
+
             Return ONLY the final answer as plain text.
         """
         return await call_llm(prompt)

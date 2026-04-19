@@ -9,14 +9,13 @@ export default function ChatPage() {
 
   const chatEndRef = useRef(null);
 
-  const session_id = "session_1"; // simple for now
+  const session_id = "session_1";
   const file_name = localStorage.getItem("file_name");
   const dataset_context = localStorage.getItem("dataset_context");
 
-  // auto scroll
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loading]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -42,8 +41,32 @@ export default function ChatPage() {
       };
 
       setMessages((prev) => [...prev, botMessage]);
+
     } catch (error) {
       console.error(error);
+
+      let errorMessage = "Something went wrong. Please try again.";
+
+      if (error.response) {
+        // Backend responded with error
+        if (error.response.status === 500) {
+          errorMessage = "⚠️ Internal Server Error. Please try again.";
+        } else {
+          errorMessage = error.response.data?.error || errorMessage;
+        }
+      } else if (error.request) {
+        // No response
+        errorMessage = "⚠️ Server not reachable. Check backend.";
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          text: errorMessage,
+        },
+      ]);
+
     } finally {
       setLoading(false);
     }
@@ -51,7 +74,7 @@ export default function ChatPage() {
 
   return (
     <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      
+
       {/* Chat Messages */}
       <div style={{
         flex: 1,
@@ -89,6 +112,21 @@ export default function ChatPage() {
           </div>
         ))}
 
+        {/* 🔥 Loader Bubble */}
+        {loading && (
+          <div style={{ textAlign: "left", marginBottom: "15px" }}>
+            <div style={{
+              display: "inline-block",
+              padding: "10px",
+              borderRadius: "10px",
+              background: "#e0e0e0",
+              color: "#000"
+            }}>
+              Thinking...
+            </div>
+          </div>
+        )}
+
         <div ref={chatEndRef} />
       </div>
 
@@ -103,9 +141,10 @@ export default function ChatPage() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask something about your data..."
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
         <button onClick={handleSend} disabled={loading}>
-          {loading ? "..." : "Send"}
+          Send
         </button>
       </div>
 
