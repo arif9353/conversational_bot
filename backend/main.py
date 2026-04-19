@@ -204,7 +204,11 @@ async def chat(req: ChatReq):
     try:
         user_query = req.query
         session_id = req.session_id
-        df = pd.read_excel(f"uploads/{req.file_name}")
+        file_path = f"uploads/{req.file_name}"
+        if file_path.endswith(".csv"):
+            df = pd.read_csv(file_path)
+        else:
+            df = pd.read_excel(file_path)
         dataset_context = req.dataset_context
         chain = await build_langgraph_workflow()
         history = get_session_history(session_id)

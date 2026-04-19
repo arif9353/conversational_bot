@@ -8,7 +8,7 @@ import pandas as pd
 from agents.visualization import visualization
 from utils.generate_visualization_chart import generate_chart
 from utils.visualization_data_format import format_data_for_visualization
-
+from agents.pandas_query_validator import pandas_query_validator
 # import asyncio
 # from utils.print_langgraph_state import print_state
 
@@ -23,8 +23,9 @@ class State(TypedDict):
     enhanced_user_query: str
     continue_conversation: bool
 
-    # pandas query gen+exec
+    # pandas query gen+validation+exec
     generated_pandas_query: str
+    validated_pandas_query: str
     pandas_result: dict
 
     # visualization
@@ -59,12 +60,21 @@ async def pandas_query_generator_agent(state: State) -> State:
         return state
     except Exception as e:
         print("Exception occured in pandas_query_generator_agent() in langgraph_workflow.py as: ",e)
+        raise e   
+
+
+async def pandas_query_validator_agent(state: State) -> State:
+    try:
+        state["validated_pandas_query"] = await pandas_query_validator(state["enhanced_user_query"], state["data_context"], state["generated_pandas_query"])
+        return state
+    except Exception as e:
+        print("Exception occured in pandas_query_validator_agent() in langgraph_workflow.py as: ",e)
         raise e    
     
 
 async def pandas_query_executor_agent(state: State) -> State:
     try:
-        state["pandas_result"] = pandas_query_executor(state["pandas_dataframe"], state["generated_pandas_query"])
+        state["pandas_result"] = pandas_query_executor(state["pandas_dataframe"], state["validated_pandas_query"])
         return state
     except Exception as e:
         print("Exception occured in pandas_query_executor_agent() in langgraph_workflow.py as: ",e)
@@ -100,7 +110,7 @@ def check_visualization_condition(state: State) -> str:
 
 async def visualization_agent(state: State) -> State:
     try:
-        resp = await visualization(state["enhanced_user_query"], state["generated_pandas_query"], state["pandas_result"], state["data_context"])
+        resp = await visualization(state["enhanced_user_query"], state["validated_pandas_query"], state["pandas_result"], state["data_context"])
         state["visualization_type"] = resp["recommended_visualization"]
         state["visualization_reason"] = resp["reason"]
         state["visualization_required"] = resp["recommended_visualization"] != "none"
@@ -131,6 +141,7 @@ async def build_langgraph_workflow() -> Any:
 
         graph.add_node("input_guardrail_agent", input_guardrail_agent)
         graph.add_node("pandas_query_generator_agent", pandas_query_generator_agent)
+        graph.add_node("pandas_query_validator_agent", pandas_query_validator_agent)
         graph.add_node("pandas_query_executor_agent", pandas_query_executor_agent)
         graph.add_node("visualization_agent", visualization_agent)
         graph.add_node("data_formatter", data_formatter)
@@ -146,7 +157,8 @@ async def build_langgraph_workflow() -> Any:
                 "CONTINUE": "pandas_query_generator_agent"
             }                        
         )
-        graph.add_edge("pandas_query_generator_agent", "pandas_query_executor_agent")
+        graph.add_edge("pandas_query_generator_agent", "pandas_query_validator_agent")
+        graph.add_edge("pandas_query_validator_agent", "pandas_query_executor_agent")
         graph.add_edge("pandas_query_executor_agent", "visualization_agent")
         graph.add_conditional_edges(
             "visualization_agent",

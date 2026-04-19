@@ -18,8 +18,8 @@ async def process_file(file_path: str):
         context = await ingestion(columns, sample_rows, dtypes)
         
         # Save context
-        with open("dataset_context.txt", "w", encoding="utf-8") as f:
-            f.write(context)
+        # with open("dataset_context.txt", "w", encoding="utf-8") as f:
+        #     f.write(context)
 
         return {
             "columns": columns,

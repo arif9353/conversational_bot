@@ -7,6 +7,8 @@ from io import BytesIO
 
 def generate_chart(formatted_data: dict, chart_type: str):
     try:
+        if not formatted_data:
+            return ""   # no chart
         plt.figure()
 
         if chart_type == "bar":

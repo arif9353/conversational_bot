@@ -1,21 +1,23 @@
 # import pandas as pd
 # from agents.pandas_query_executor import pandas_query_executor
 
+import numbers
+
 def format_data_for_visualization(result: dict, chart_type: str):
     try:
-        if result["type"] == "scalar":
+        if not result:
             return None
 
-        # ✅ SERIES (FIXED)
+        # -------------------------
+        # SERIES
+        # -------------------------
         if result["type"] == "series":
             x = result.get("index", list(range(len(result["data"]))))
             y = result["data"]
 
-            # limit size
             x = x[:20]
             y = y[:20]
 
-            # PIE special case
             if chart_type == "pie":
                 return {
                     "labels": x,
@@ -27,23 +29,43 @@ def format_data_for_visualization(result: dict, chart_type: str):
                 "y": y
             }
 
-        # DATAFRAME (same as before)
+        # -------------------------
+        # DATAFRAME (FIXED PROPERLY)
+        # -------------------------
         if result["type"] == "dataframe":
             rows = result["data"]
-            cols = result["summary"]["columns"]
 
-            if len(cols) < 2:
+            if not rows:
+                return None
+
+            keys = list(rows[0].keys())
+
+            if len(keys) < 2:
                 return None
 
             rows = rows[:20]
 
-            x = [row[cols[0]] for row in rows]
-            y = [row[cols[1]] for row in rows]
+            # 🔥 Detect numeric vs categorical
+            x_key = None
+            y_key = None
 
+            for key in keys:
+                if isinstance(rows[0][key], numbers.Number):
+                    y_key = key
+                else:
+                    x_key = key
+
+            if not x_key or not y_key:
+                return None
+
+            x = [row[x_key] for row in rows]
+            y = [row[y_key] for row in rows]
+
+            # 🔥 PIE FIX
             if chart_type == "pie":
                 return {
-                    "labels": x,
-                    "values": y
+                    "labels": x,   # categorical
+                    "values": y    # numeric
                 }
 
             return {
@@ -54,8 +76,8 @@ def format_data_for_visualization(result: dict, chart_type: str):
         return None
 
     except Exception as e:
-        print("Exception occured in format_data_for_visualization() in visualization_data_format.py as: ", e)
-        raise e
+        print("Error in format_data_for_visualization:", e)
+        return None
     
 # if __name__=="__main__":
 #     def _main():

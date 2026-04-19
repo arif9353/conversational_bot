@@ -2,6 +2,5 @@ myenv/
 .env
 __pycache__
 uploads
-*.txt
 *.xlsx
 *.csv

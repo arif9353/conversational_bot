@@ -10,7 +10,7 @@ client = genai.Client()
 async def call_llm(prompt: str) -> str :
     try:
         await rate_limiter.wait_for_slot()
-        response = client.models.generate_content(
+        response = await client.aio.models.generate_content(
             model="gemini-3.1-flash-lite-preview", contents=prompt
         )
         return response.text
