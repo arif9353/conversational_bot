@@ -105,10 +105,10 @@ http://localhost:5173
 5. Response + optional visualization returned to UI
 
 ### 🔹 System Design:
-
+![System Design](./assets/system_design.png)
 
 ### 🔹 Agentic Workflow (LangGraph):
-
+![System Design](./assets/agentic_workflow.png)
 
 ## 🤖 Agents Overview
 
@@ -146,11 +146,11 @@ Understand uploaded dataset and generate structured context which will be used b
 #### Output:
 
 A JSON of this format:
-{
-  "isContinue": <true or false>,
-  "contextualized_user_query": <enhanced user query based on the conversation history+dataset context>,
-  "query": <if further processing isn't required then provides a conversational response which will be shown to the user.>
-}
+    {
+        "isContinue": <true or false>,
+        "contextualized_user_query": <enhanced user query based on the conversation history+dataset context>,
+        "query": <if further processing isn't required then provides a conversational response which will be shown to the user.>
+    }
 
 ### 3️⃣ Pandas Query Generator Agent
 
@@ -196,10 +196,10 @@ Execute generated query safely
 #### Output:
 
 A JSON type of output:
-{
-  "type": "dataframe / series / scalar",
-  "data": ...
-}
+    {
+        "type": "dataframe / series / scalar",
+        "data": ...
+    }
 
 ### 6️⃣ Visualization Agent
 
@@ -224,10 +224,10 @@ Decide if visualization is needed as per the data and which type
 #### Output:
 
 A JSON type of output:
-{
-  "recommended_visualization": "bar",
-  "reason": "..."
-}
+    {
+        "recommended_visualization": "bar",
+        "reason": "..."
+    }
 
 ### 7️⃣ Data Formatter (Non LLM)
 
@@ -241,7 +241,7 @@ Convert query result into plottable format
 
 #### Output:
 
-A formatted JSON as per the type of chat suggested
+A formatted JSON as per the type of chart suggested
 
 ### 8️⃣ Chart Generator (Non LLM)
 
@@ -311,4 +311,6 @@ Hybrid caching implemented:
 6. Multi-file support
 
 
-#### Feel free to connect w me on linkedIn: https://linkedin.com/in/arif9353
+## 🤝 Connect with Me
+
+- 🔗 LinkedIn: [Mohammed Arif](https://linkedin.com/in/arif9353)
